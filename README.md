@@ -1,12 +1,12 @@
-# Run and deploy your AI Studio app
+# Sistema del Almacen de Viveres
 
-This contains everything you need to run your app locally.
+Proyecto en progreso
 
-View your app in AI Studio: https://ai.studio/apps/drive/1mg7asHVGn81bdSl5dnS8LKGdLXR_XUXP?showAssistant=true&showTreeView=true&resourceKey=&showPreview=true
+La base de AI Studio: https://ai.studio/apps/drive/1mg7asHVGn81bdSl5dnS8LKGdLXR_XUXP?showAssistant=true&showTreeView=true&resourceKey=&showPreview=true
 
-## Run Locally
+## Ejecutar Localmente
 
-**Prerequisites:**  Node.js
+**Requisitos:**  Node.js
 
 
 1. Install dependencies:
