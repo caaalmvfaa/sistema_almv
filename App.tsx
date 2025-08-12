@@ -86,6 +86,7 @@ const App: React.FC = () => {
     }, 1000);
   }, [crearPedidos]);
 
+    const { generarSalida } = useSalidas(); // Mover la declaración de generarSalida aquí
 
   const userSalidas = useMemo(() => {
     if (!currentUser || !appData) return [];
@@ -155,7 +156,7 @@ const App: React.FC = () => {
       <Route path="/contracts" element={<ContractsView contratos={appData!.contratos} />} />
       <Route path="/planning" element={<PlanningGrid contracts={appData!.contratos} onSubmit={handlePlanSubmit} isLoading={isSubmitting} />} />
       <Route path="/warehouse-calendar" element={<WarehouseCalendar pedidos={appData!.pedidos} contratos={appData!.contratos} onGenerateReport={handleGenerateReport} />} />
-      <Route path="/dispatch" element={<DispatchLog salidas={userSalidas} usuarios={appData!.usuarios} contratos={appData!.contratos} onGenerateDispatch={handleGenerateDispatch} isLoading={false} pedidos={appData!.pedidos} onPrint={handlePrintDispatch} />} />
+    <Route path="/dispatch" element={<DispatchLog salidas={userSalidas} usuarios={appData!.usuarios} contratos={appData!.contratos} onGenerateDispatch={generarSalida} isLoading={false} pedidos={appData!.pedidos} onPrint={handlePrintDispatch} />} />
       <Route path="/user_report" element={<ConsolidatedReport pedidos={appData!.pedidos} contratos={appData!.contratos} userId={currentUser!.id_usuario} />} />
       <Route path="/reports" element={<ConsolidatedReport pedidos={appData!.pedidos} contratos={appData!.contratos} />} />
       <Route path="/penalties" element={<PenaltiesView reports={nonComplianceReports} onUpdateStatus={handleUpdateReportStatus} />} />
