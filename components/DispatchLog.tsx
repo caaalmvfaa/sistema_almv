@@ -1,21 +1,22 @@
 
 import React, { useMemo, useState } from 'react';
 import { SalidaGenerada, UsuarioConfig, ContratoItem, EstadoSalida, MealType, PedidoLog } from '../types';
+import { useAppStore } from '../store';
 import { Card, Modal, Button } from './ui';
 import { CheckCircleIcon, ClockIcon, TruckIcon, PrinterIcon } from './icons';
 
 interface DispatchLogProps {
-  salidas: SalidaGenerada[];
-  usuarios: UsuarioConfig[];
-  contratos: ContratoItem[];
-  onGenerateDispatch: (day: number, meal: MealType) => void;
-  isLoading: boolean;
-  currentUser: UsuarioConfig | null;
-  pedidos: PedidoLog[];
-  onPrint: (salida: SalidaGenerada) => void;
+    salidas: SalidaGenerada[];
+    usuarios: UsuarioConfig[];
+    contratos: ContratoItem[];
+    onGenerateDispatch: (day: number, meal: MealType) => void;
+    isLoading: boolean;
+    pedidos: PedidoLog[];
+    onPrint: (salida: SalidaGenerada) => void;
 }
 
-const DispatchLog: React.FC<DispatchLogProps> = ({ salidas, usuarios, contratos, onGenerateDispatch, isLoading, currentUser, pedidos, onPrint }) => {
+const DispatchLog: React.FC<DispatchLogProps> = ({ salidas, usuarios, contratos, onGenerateDispatch, isLoading, pedidos, onPrint }) => {
+    const currentUser = useAppStore(state => state.currentUser);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedSalida, setSelectedSalida] = useState<SalidaGenerada | null>(null);

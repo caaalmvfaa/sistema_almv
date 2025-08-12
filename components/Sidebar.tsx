@@ -14,7 +14,8 @@ import {
   GavelIcon
 } from './icons';
 import { Button } from './ui';
-import { AppView, UsuarioConfig } from '../types';
+import { AppView } from '../types';
+import { useAppStore } from '../store';
 
 
 interface NavItem {
@@ -27,10 +28,10 @@ interface SidebarProps {
   activeView: AppView | null;
   onNavigate: (view: AppView) => void;
   onLogout: () => void;
-  currentUser: UsuarioConfig | null;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeView, onNavigate, onLogout, currentUser }) => {
+const Sidebar: React.FC<SidebarProps> = ({ activeView, onNavigate, onLogout }) => {
+  const currentUser = useAppStore(state => state.currentUser);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const navItems: NavItem[] = [

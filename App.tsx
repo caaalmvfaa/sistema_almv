@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useAppStore } from './store';
 import { generateInitialData } from './services/geminiService';
 import { 
   ContratoItem, 
@@ -32,8 +33,10 @@ import PenaltiesView from './components/PenaltiesView';
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [appData, setAppData] = useState<AppData | null>(null);
-  const [currentUser, setCurrentUser] = useState<UsuarioConfig | null>(null);
+  const appData = useAppStore(state => state.appData);
+  const setAppData = useAppStore(state => state.setAppData);
+  const currentUser = useAppStore(state => state.currentUser);
+  const setCurrentUser = useAppStore(state => state.setCurrentUser);
   const [activeView, setActiveView] = useState<AppView | null>('contracts');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -45,7 +48,7 @@ const App: React.FC = () => {
     setError(null);
     try {
       const data = await generateInitialData();
-      setAppData(data);
+  setAppData(data);
       setActiveView('contracts');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred during initialization.');
@@ -61,14 +64,14 @@ const App: React.FC = () => {
   const handleLogin = useCallback((user: UsuarioConfig) => {
     setIsLoggingIn(true);
     setTimeout(() => {
-      setCurrentUser(user);
+  setCurrentUser(user);
       setActiveView('contracts');
       setIsLoggingIn(false);
     }, 500);
   }, []);
 
   const handleLogout = () => {
-    setCurrentUser(null);
+  setCurrentUser(null);
     setActiveView(null);
   };
 
