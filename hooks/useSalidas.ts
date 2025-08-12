@@ -1,10 +1,10 @@
-import { useAppStore } from '../store';
-import { SalidaGenerada, EstadoSalida, MealType, UsuarioConfig } from '../types';
+import { useAppStore, User } from '../store';
+import { SalidaGenerada, EstadoSalida, MealType } from '../types';
 
 export function useSalidas() {
   const appData = useAppStore(state => state.appData);
   const setAppData = useAppStore(state => state.setAppData);
-  const currentUser = useAppStore(state => state.currentUser) as UsuarioConfig;
+  const currentUser = useAppStore(state => state.currentUser) as User;
 
   function generarSalida(day: number, meal: MealType) {
     if (!currentUser || !appData) return;

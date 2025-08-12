@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { useAppStore } from './store';
+import { useAppStore, User } from './store';
 import { generateInitialData } from './services/geminiService';
 import { 
   ContratoItem, 
@@ -52,7 +52,6 @@ const App: React.FC = () => {
     try {
       const data = await generateInitialData();
   setAppData(data);
-      setActiveView('contracts');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred during initialization.');
     } finally {
@@ -64,7 +63,7 @@ const App: React.FC = () => {
     initializeApp();
   }, [initializeApp]);
 
-  const handleLogin = useCallback((user: UsuarioConfig) => {
+  const handleLogin = useCallback((user: User) => {
     setIsLoggingIn(true);
     setTimeout(() => {
       setCurrentUser(user);
