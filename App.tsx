@@ -86,47 +86,6 @@ const App: React.FC = () => {
     }, 1000);
   }, [crearPedidos]);
 
-  const handleGenerateDispatch = useCallback((day: number, meal: MealType) => {
-    if (!currentUser || !appData) return;
-
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth();
-    const targetDate = new Date(year, month, day);
-
-    const relevantPedidos = appData.pedidos.filter(p => {
-      const pedidoDate = new Date(p.fecha_programada);
-      return p.id_usuario === currentUser.id_usuario &&
-        pedidoDate.getDate() === targetDate.getDate() &&
-        pedidoDate.getMonth() === targetDate.getMonth() &&
-        pedidoDate.getFullYear() === targetDate.getFullYear() &&
-        p.tipo_comida === meal;
-    });
-
-    if (relevantPedidos.length === 0) {
-      alert(`No se encontró planificación para el día ${day} - ${meal}.`);
-      return;
-    }
-
-    const detalleArticulos = relevantPedidos.map(p => ({
-      id_articulo: p.id_articulo,
-      cantidad: p.cantidad
-    }));
-
-    const newSalida: SalidaGenerada = {
-      id_salida: `SAL-${Date.now()}`,
-      timestamp_generacion: new Date().toISOString(),
-      id_usuario_solicitante: currentUser.id_usuario,
-      nombre_servicio: currentUser.nombre_servicio_asignado,
-      fecha_salida: targetDate.toISOString(),
-      tipo_comida: meal,
-      detalle_articulos: JSON.stringify(detalleArticulos),
-      estado_salida: EstadoSalida.PENDIENTE
-    };
-
-    setAppData(prevData => prevData ? { ...prevData, salidas: [newSalida, ...prevData.salidas] } : null);
-    alert(`Solicitud de salida #${newSalida.id_salida.substring(0, 8)}... generada con éxito.`);
-  }, [currentUser, appData]);
 
   const userSalidas = useMemo(() => {
     if (!currentUser || !appData) return [];
@@ -135,7 +94,7 @@ const App: React.FC = () => {
       .sort((a, b) => new Date(b.timestamp_generacion).getTime() - new Date(a.timestamp_generacion).getTime());
   }, [appData, currentUser]);
 
-  const contratosMap = useMemo(() => new Map(appData?.contratos.map(c => [c.id_articulo, c]) || []), [appData]);
+  const contratosMap = useMemo(() => new Map<string, ContratoItem>(appData?.contratos.map(c => [c.id_articulo, c]) || []), [appData]);
 
   const handlePrintDispatch = (salida: SalidaGenerada) => {
     setPrintableSalida(salida);
@@ -144,8 +103,8 @@ const App: React.FC = () => {
   const handleGenerateReport = useCallback((delivery: ConsolidatedDelivery, reason: DeliveryStatus.RECHAZADO | DeliveryStatus.INCOMPLETO, remarks: string) => {
     if (!appData) return;
     const firstItem = delivery.items[0];
-    const contract = contratosMap.get(firstItem.id_articulo);
-    const providerId = contract?.id_proveedor || 'Proveedor Desconocido';
+  const contract = contratosMap.get(firstItem.id_articulo) as ContratoItem | undefined;
+  const providerId = contract?.id_proveedor || 'Proveedor Desconocido';
 
     const newReport: NonComplianceReport = {
       report_id: `INC-${Date.now()}`,
@@ -189,6 +148,21 @@ const App: React.FC = () => {
     return <LoginScreen users={appData.usuarios} onLogin={handleLogin} isLoading={isLoggingIn} />;
   }
 
+  // Definir MainRoutes antes del return para evitar error de referencia
+  const MainRoutes = () => (
+    <Routes>
+      <Route path="/" element={<Navigate to="/contracts" replace />} />
+      <Route path="/contracts" element={<ContractsView contratos={appData!.contratos} />} />
+      <Route path="/planning" element={<PlanningGrid contracts={appData!.contratos} onSubmit={handlePlanSubmit} isLoading={isSubmitting} />} />
+      <Route path="/warehouse-calendar" element={<WarehouseCalendar pedidos={appData!.pedidos} contratos={appData!.contratos} onGenerateReport={handleGenerateReport} />} />
+      <Route path="/dispatch" element={<DispatchLog salidas={userSalidas} usuarios={appData!.usuarios} contratos={appData!.contratos} onGenerateDispatch={handleGenerateDispatch} isLoading={false} pedidos={appData!.pedidos} onPrint={handlePrintDispatch} />} />
+      <Route path="/user_report" element={<ConsolidatedReport pedidos={appData!.pedidos} contratos={appData!.contratos} userId={currentUser!.id_usuario} />} />
+      <Route path="/reports" element={<ConsolidatedReport pedidos={appData!.pedidos} contratos={appData!.contratos} />} />
+      <Route path="/penalties" element={<PenaltiesView reports={nonComplianceReports} onUpdateStatus={handleUpdateReportStatus} />} />
+      <Route path="*" element={<div className="p-8 text-center text-slate-500">Vista no encontrada</div>} />
+    </Routes>
+  );
+    <Route path="/dispatch" element={<DispatchLog salidas={userSalidas} usuarios={appData!.usuarios} contratos={appData!.contratos} onGenerateDispatch={generarSalida} isLoading={false} pedidos={appData!.pedidos} onPrint={handlePrintDispatch} />} />
   return (
     <Router>
       <div className="flex h-screen bg-zinc-100/50">

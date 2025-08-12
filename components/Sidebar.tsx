@@ -14,34 +14,33 @@ import {
   GavelIcon
 } from './icons';
 import { Button } from './ui';
-import { AppView } from '../types';
+import { useLocation, Link } from 'react-router-dom';
 import { useAppStore } from '../store';
 
 
 interface NavItem {
-  id: AppView;
+  path: string;
   label: string;
   icon: React.ReactNode;
 }
 
 interface SidebarProps {
-  activeView: AppView | null;
-  onNavigate: (view: AppView) => void;
   onLogout: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeView, onNavigate, onLogout }) => {
+const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
   const currentUser = useAppStore(state => state.currentUser);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const location = useLocation();
 
   const navItems: NavItem[] = [
-    { id: 'contracts', label: 'Contratos', icon: <DocumentTextIcon className="h-5 w-5 text-teal-500" /> },
-    { id: 'planning', label: 'Planificación', icon: <ClipboardDocumentListIcon className="h-5 w-5 text-blue-500" /> },
-    { id: 'warehouse-calendar', label: 'Recepción Almacén', icon: <CalendarDaysIcon className="h-5 w-5 text-red-500" /> },
-    { id: 'dispatch', label: 'Salidas', icon: <TruckIcon className="h-5 w-5 text-orange-500" /> },
-    { id: 'user_report', label: 'Mi Consolidado', icon: <ChartBarSquareIcon className="h-5 w-5 text-purple-500" /> },
-    { id: 'reports', label: 'Programación', icon: <ChartBarIcon className="h-5 w-5 text-lime-500" /> },
-    { id: 'penalties', label: 'Penalizaciones', icon: <GavelIcon className="h-5 w-5 text-gray-500" /> },
+    { path: '/contracts', label: 'Contratos', icon: <DocumentTextIcon className="h-5 w-5 text-teal-500" /> },
+    { path: '/planning', label: 'Planificación', icon: <ClipboardDocumentListIcon className="h-5 w-5 text-blue-500" /> },
+    { path: '/warehouse-calendar', label: 'Recepción Almacén', icon: <CalendarDaysIcon className="h-5 w-5 text-red-500" /> },
+    { path: '/dispatch', label: 'Salidas', icon: <TruckIcon className="h-5 w-5 text-orange-500" /> },
+    { path: '/user_report', label: 'Mi Consolidado', icon: <ChartBarSquareIcon className="h-5 w-5 text-purple-500" /> },
+    { path: '/reports', label: 'Programación', icon: <ChartBarIcon className="h-5 w-5 text-lime-500" /> },
+    { path: '/penalties', label: 'Penalizaciones', icon: <GavelIcon className="h-5 w-5 text-gray-500" /> },
   ];
 
   const toggleCollapse = () => {
@@ -66,12 +65,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onNavigate, onLogout }) =
 
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
         {navItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => onNavigate(item.id)}
+          <Link
+            key={item.path}
+            to={item.path}
             title={isCollapsed ? item.label : ''}
             className={`group flex items-center w-full py-2.5 px-3 rounded-lg text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
-              ${activeView === item.id ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800'}
+              ${location.pathname === item.path ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800'}
               ${isCollapsed ? 'justify-center' : ''}
             `}
           >
@@ -81,7 +80,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onNavigate, onLogout }) =
             <span className={`transition-opacity duration-200 whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 ml-3'}`}>
               {item.label}
             </span>
-          </button>
+          </Link>
         ))}
       </nav>
 
