@@ -15,6 +15,7 @@ interface AppState {
   setAppData: (data: AppData | null | ((prev: AppData | null) => AppData | null)) => void;
 }
 
+export const useAppStore = create<AppState>((set) => ({
   currentUser: null,
   appData: null,
   setCurrentUser: (user) => set({ currentUser: user }),
@@ -25,15 +26,4 @@ interface AppState {
       set({ appData: data });
     }
   },
-  // Devuelve el objeto directamente, sin return
-    currentUser: null,
-    appData: null,
-    setCurrentUser: (user) => set({ currentUser: user }),
-    setAppData: (data) => {
-      if (typeof data === 'function') {
-        set(state => ({ appData: (data as any)(state.appData) }));
-      } else {
-        set({ appData: data });
-      }
-    },
-  // fin del objeto
+}));
