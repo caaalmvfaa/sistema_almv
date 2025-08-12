@@ -26,11 +26,11 @@ const mapContractData = (item: any, index: number): ContratoItem => ({
  * @returns An array of UsuarioConfig objects.
  */
 const getUsers = (): UsuarioConfig[] => [
-    { id_usuario: 'USR01', nombre_usuario: 'Ana García', email_usuario: 'ana.garcia@hospital.com', nombre_servicio_asignado: 'Pacientes Piso 1' },
-    { id_usuario: 'USR02', nombre_usuario: 'Luis Hernández', email_usuario: 'luis.hernandez@hospital.com', nombre_servicio_asignado: 'Comedor Empleados' },
-    { id_usuario: 'USR03', nombre_usuario: 'María Martínez', email_usuario: 'maria.martinez@hospital.com', nombre_servicio_asignado: 'Terapia Intensiva' },
-    { id_usuario: 'USR04', nombre_usuario: 'José Rodríguez', email_usuario: 'jose.rodriguez@hospital.com', nombre_servicio_asignado: 'Pediatría' },
-    { id_usuario: 'USR05', nombre_usuario: 'Sofía Pérez', email_usuario: 'sofia.perez@hospital.com', nombre_servicio_asignado: 'Cirugía Ambulatoria' },
+    { id_usuario: 'USR01', nombre_usuario: 'Nutriologa 1', email_usuario: 'ana.garcia@hospital.com', nombre_servicio_asignado: 'Pacientes' },
+    { id_usuario: 'USR02', nombre_usuario: 'Nutriologa 2', email_usuario: 'luis.hernandez@hospital.com', nombre_servicio_asignado: 'Comedor' },
+    { id_usuario: 'USR03', nombre_usuario: 'Nutriologa 3', email_usuario: 'maria.martinez@hospital.com', nombre_servicio_asignado: 'Jornada' },
+    { id_usuario: 'USR04', nombre_usuario: 'Administrador', email_usuario: 'jose.rodriguez@hospital.com', nombre_servicio_asignado: 'Almacen de Viveres' },
+    { id_usuario: 'USR05', nombre_usuario: 'Almacenista', email_usuario: 'sofia.perez@hospital.com', nombre_servicio_asignado: 'Almacen de Viveres' },
 ];
 
 /**
