@@ -1,0 +1,5 @@
+{
+  "name": "Sistema de Gestión de Víveres",
+  "description": "Una aplicación web para automatizar la planificación de pedidos de víveres, la consolidación para compras y la generación de solicitudes de salida operativas para múltiples usuarios y servicios.",
+  "requestFramePermissions": []
+}
