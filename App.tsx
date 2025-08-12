@@ -40,7 +40,7 @@ const App: React.FC = () => {
   const setAppData = useAppStore(state => state.setAppData);
   const currentUser = useAppStore(state => state.currentUser);
   const setCurrentUser = useAppStore(state => state.setCurrentUser);
-  const [activeView, setActiveView] = useState<AppView | null>('contracts');
+  // Eliminado: activeView y setActiveView, ahora la navegación es por rutas
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [printableSalida, setPrintableSalida] = useState<SalidaGenerada | null>(null);
@@ -67,15 +67,13 @@ const App: React.FC = () => {
   const handleLogin = useCallback((user: UsuarioConfig) => {
     setIsLoggingIn(true);
     setTimeout(() => {
-  setCurrentUser(user);
-      setActiveView('contracts');
+      setCurrentUser(user);
       setIsLoggingIn(false);
     }, 500);
   }, []);
 
   const handleLogout = () => {
-  setCurrentUser(null);
-    setActiveView(null);
+    setCurrentUser(null);
   };
 
   const { crearPedidos } = usePedidos();
@@ -173,19 +171,7 @@ const App: React.FC = () => {
   }, []);
 
 
-  const renderContent = () => {
-    if (!appData) return null;
-    switch (activeView) {
-      case 'contracts': return <ContractsView contratos={appData.contratos} />;
-      case 'planning': return <PlanningGrid contracts={appData.contratos} onSubmit={handlePlanSubmit} isLoading={isSubmitting} />;
-      case 'warehouse-calendar': return <WarehouseCalendar pedidos={appData.pedidos} contratos={appData.contratos} onGenerateReport={handleGenerateReport} />;
-      case 'dispatch': return <DispatchLog salidas={userSalidas} usuarios={appData.usuarios} contratos={appData.contratos} onGenerateDispatch={handleGenerateDispatch} isLoading={false} currentUser={currentUser} pedidos={appData.pedidos} onPrint={handlePrintDispatch} />;
-      case 'user_report': return <ConsolidatedReport pedidos={appData.pedidos} contratos={appData.contratos} userId={currentUser!.id_usuario} />;
-      case 'reports': return <ConsolidatedReport pedidos={appData.pedidos} contratos={appData.contratos} />;
-      case 'penalties': return <PenaltiesView reports={nonComplianceReports} onUpdateStatus={handleUpdateReportStatus} />;
-      default: return <div className="p-8 text-center text-slate-500">Seleccione una vista</div>;
-    }
-  };
+  // Eliminado: renderContent, ahora el contenido se maneja por rutas
 
   if (isLoading) {
     return <div className="h-screen flex items-center justify-center bg-zinc-50"><Spinner message="Cargando aplicación..." /></div>;
@@ -204,27 +190,24 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="flex h-screen bg-zinc-100/50">
-      <Sidebar 
-        activeView={activeView} 
-        onNavigate={(view: AppView) => setActiveView(view)} 
-        onLogout={handleLogout} 
-        currentUser={currentUser} 
-      />
-      <main className="flex-1 overflow-y-auto">
-        <div className="p-6 lg:p-8">
-          {renderContent()}
-        </div>
-      </main>
-      {printableSalida && (
-        <PrintableDispatch 
-          salida={printableSalida} 
-          user={currentUser} 
-          contratosMap={contratosMap} 
-          onClose={() => setPrintableSalida(null)}
-        />
-      )}
-    </div>
+    <Router>
+      <div className="flex h-screen bg-zinc-100/50">
+        <Sidebar onLogout={handleLogout} />
+        <main className="flex-1 overflow-y-auto">
+          <div className="p-6 lg:p-8">
+            <MainRoutes />
+          </div>
+        </main>
+        {printableSalida && (
+          <PrintableDispatch 
+            salida={printableSalida} 
+            user={currentUser} 
+            contratosMap={contratosMap} 
+            onClose={() => setPrintableSalida(null)}
+          />
+        )}
+      </div>
+    </Router>
   );
 };
 
