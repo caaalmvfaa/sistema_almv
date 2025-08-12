@@ -29,6 +29,9 @@ import ErrorScreen from './components/ErrorScreen';
 import WarehouseCalendar from './components/WarehouseCalendar';
 import PenaltiesView from './components/PenaltiesView';
 
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { usePedidos } from './hooks/usePedidos';
+import { useSalidas } from './hooks/useSalidas';
 
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -75,39 +78,15 @@ const App: React.FC = () => {
     setActiveView(null);
   };
 
+  const { crearPedidos } = usePedidos();
   const handlePlanSubmit = useCallback((data: PlanificacionData) => {
-    if (!currentUser || !appData) return;
     setIsSubmitting(true);
-
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth();
-
-    const newPedidos: PedidoLog[] = [];
-    Object.entries(data).forEach(([itemId, days]) => {
-      Object.entries(days).forEach(([day, meals]) => {
-        Object.entries(meals).forEach(([meal, quantity]) => {
-          if (quantity > 0) {
-            newPedidos.push({
-              id_pedido: `PED-${Date.now()}-${Math.random()}`,
-              timestamp_envio: new Date().toISOString(),
-              id_usuario: currentUser.id_usuario,
-              id_articulo: itemId,
-              fecha_programada: new Date(year, month, parseInt(day)).toISOString(),
-              tipo_comida: meal as MealType,
-              cantidad: quantity,
-            });
-          }
-        });
-      });
-    });
-
     setTimeout(() => {
-      setAppData(prevData => prevData ? { ...prevData, pedidos: [...prevData.pedidos, ...newPedidos] } : null);
+      crearPedidos(data);
       setIsSubmitting(false);
       alert('Planificación enviada con éxito!');
     }, 1000);
-  }, [currentUser, appData]);
+  }, [crearPedidos]);
 
   const handleGenerateDispatch = useCallback((day: number, meal: MealType) => {
     if (!currentUser || !appData) return;
